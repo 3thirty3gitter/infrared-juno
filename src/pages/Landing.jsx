@@ -175,13 +175,7 @@ const Landing = () => {
 
             <footer style={{ padding: '40px 20px', textAlign: 'center', opacity: 0.5, fontSize: '0.9rem' }}>
                 <p>&copy; {new Date().getFullYear()} BoxedUp. Built with ❤️.</p>
-                <style>{`
-                    @keyframes float {
-                        0% { transform: translateY(0px) rotate(0deg); }
-                        50% { transform: translateY(-20px) rotate(5deg); }
-                        100% { transform: translateY(0px) rotate(0deg); }
-                    }
-                `}</style>
+                <p>&copy; {new Date().getFullYear()} BoxedUp. Built with ❤️.</p>
             </footer>
         </div>
     );

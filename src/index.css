@@ -193,3 +193,9 @@ input:focus, textarea:focus {
 .nav-item.active {
   color: var(--color-accent);
 }
+
+@keyframes float {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
+}
