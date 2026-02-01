@@ -225,28 +225,29 @@ const TubsList = () => {
                             })
                         )}
                     </div>
+                </>
             )}
 
-                    {/* Batch Print Action */}
-                    {isSelectionMode && selectedIds.size > 0 && (
-                        <div style={{ position: 'fixed', bottom: '100px', left: '50%', transform: 'translateX(-50%)', zIndex: 90 }}>
-                            <button
-                                onClick={prepareBatchPrint}
-                                className="btn btn-primary"
-                                style={{ padding: '12px 24px', borderRadius: '50px', boxShadow: '0 4px 20px rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', gap: '8px' }}
-                            >
-                                <Printer size={20} /> Print {selectedIds.size} Labels
-                            </button>
-                        </div>
-                    )}
-
-                    <PrintModal
-                        isOpen={isPrintModalOpen}
-                        onClose={() => setIsPrintModalOpen(false)}
-                        items={printData} // Pass array
-                    />
+            {/* Batch Print Action */}
+            {isSelectionMode && selectedIds.size > 0 && (
+                <div style={{ position: 'fixed', bottom: '100px', left: '50%', transform: 'translateX(-50%)', zIndex: 90 }}>
+                    <button
+                        onClick={prepareBatchPrint}
+                        className="btn btn-primary"
+                        style={{ padding: '12px 24px', borderRadius: '50px', boxShadow: '0 4px 20px rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', gap: '8px' }}
+                    >
+                        <Printer size={20} /> Print {selectedIds.size} Labels
+                    </button>
                 </div>
-            );
+            )}
+
+            <PrintModal
+                isOpen={isPrintModalOpen}
+                onClose={() => setIsPrintModalOpen(false)}
+                items={printData} // Pass array
+            />
+        </div>
+    );
 };
 
-            export default TubsList;
+export default TubsList;
