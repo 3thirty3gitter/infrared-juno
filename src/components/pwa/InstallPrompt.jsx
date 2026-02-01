@@ -1,11 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { Download, X } from 'lucide-react';
+import { Download, X, Share } from 'lucide-react';
 
 const InstallPrompt = () => {
     const [deferredPrompt, setDeferredPrompt] = useState(null);
     const [isVisible, setIsVisible] = useState(false);
+    const [isIOS, setIsIOS] = useState(false);
 
     useEffect(() => {
+        // Check if iOS
+        const userAgent = window.navigator.userAgent.toLowerCase();
+        const isIosDevice = /iphone|ipad|ipod/.test(userAgent);
+        const isStandalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+
+        if (isIosDevice && !isStandalone) {
+            setIsIOS(true);
+            // Small delay to not be annoying immediately
+            setTimeout(() => setIsVisible(true), 1000);
+        }
+
         const handler = (e) => {
             // Prevent the mini-infobar from appearing on mobile
             e.preventDefault();
@@ -68,10 +80,12 @@ const InstallPrompt = () => {
                         width: '40px', height: '40px', background: 'var(--color-primary)',
                         borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center'
                     }}>
-                        <Download size={20} color="white" />
+                        {isIOS ? <Share size={20} color="white" /> : <Download size={20} color="white" />}
                     </div>
                     <div>
-                        <h3 style={{ fontSize: '1rem', fontWeight: 600, margin: 0, color: 'white' }}>Install BoxedUp</h3>
+                        <h3 style={{ fontSize: '1rem', fontWeight: 600, margin: 0, color: 'white' }}>
+                            {isIOS ? 'Install for iOS' : 'Install BoxedUp'}
+                        </h3>
                         <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.7)', margin: 0 }}>
                             Add to Home Screen for the best experience
                         </p>
@@ -82,15 +96,23 @@ const InstallPrompt = () => {
                 </button>
             </div>
 
-            <div style={{ display: 'flex', gap: '12px' }}>
-                <button
-                    onClick={handleInstallClick}
-                    className="btn btn-primary"
-                    style={{ flex: 1, padding: '10px', fontSize: '0.95rem' }}
-                >
-                    Install Now
-                </button>
-            </div>
+            {isIOS ? (
+                <div style={{ background: 'rgba(255,255,255,0.1)', padding: '12px', borderRadius: '8px', fontSize: '0.9rem', color: 'rgba(255,255,255,0.9)' }}>
+                    <p style={{ margin: 0 }}>
+                        Tap the <Share size={14} style={{ display: 'inline', verticalAlign: 'middle' }} /> <strong>Share</strong> button in your browser menu and select <strong>"Add to Home Screen"</strong>.
+                    </p>
+                </div>
+            ) : (
+                <div style={{ display: 'flex', gap: '12px' }}>
+                    <button
+                        onClick={handleInstallClick}
+                        className="btn btn-primary"
+                        style={{ flex: 1, padding: '10px', fontSize: '0.95rem' }}
+                    >
+                        Install Now
+                    </button>
+                </div>
+            )}
 
             <style>{`
                 @keyframes slideUp {
