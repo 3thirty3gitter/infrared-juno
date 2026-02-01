@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import QRCode from 'qrcode';
 import { ArrowLeft, Printer, Plus, Package, Trash2 } from 'lucide-react';
+import PrintModal from '../components/tubs/PrintModal';
 
 const TubDetails = () => {
     const { id } = useParams();
@@ -11,6 +12,7 @@ const TubDetails = () => {
     const [items, setItems] = useState([]);
     const [qrUrl, setQrUrl] = useState('');
     const [loading, setLoading] = useState(true);
+    const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
 
     useEffect(() => {
         fetchTubDetails();
@@ -73,35 +75,6 @@ const TubDetails = () => {
         }
     };
 
-    const handlePrint = () => {
-        const printWindow = window.open('', '_blank');
-        printWindow.document.write(`
-      <html>
-        <head>
-          <title>Print QR - ${tub?.name}</title>
-          <style>
-            body { font-family: sans-serif; text-align: center; padding: 40px; }
-            h1 { margin-bottom: 10px; }
-            p { color: #666; }
-            img { max-width: 100%; height: auto; border: 4px solid #000; border-radius: 12px; }
-            .meta { margin-top: 20px; border: 1px solid #ccc; padding: 20px; display: inline-block; }
-          </style>
-        </head>
-        <body>
-          <h1>${tub?.name}</h1>
-          <p>${tub?.description || ''}</p>
-          <img src="${qrUrl}" width="300" />
-          <div class="meta">
-            <strong>Location:</strong> ${tub?.location || 'N/A'}<br/>
-            <small>ID: ${tub?.id}</small>
-          </div>
-          <script>window.print();</script>
-        </body>
-      </html>
-    `);
-        printWindow.document.close();
-    };
-
     if (loading) return <div className="container" style={{ paddingTop: '40px', textAlign: 'center' }}>Loading...</div>;
     if (!tub) return <div className="container">Tub not found</div>;
 
@@ -127,7 +100,7 @@ const TubDetails = () => {
                 </div>
 
                 <div style={{ marginTop: '20px', display: 'flex', gap: '12px', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <button onClick={handlePrint} className="btn btn-ghost" style={{ border: '1px solid rgba(255,255,255,0.2)' }}>
+                    <button onClick={() => setIsPrintModalOpen(true)} className="btn btn-ghost" style={{ border: '1px solid rgba(255,255,255,0.2)' }}>
                         <Printer size={18} /> Print Label
                     </button>
                     <button onClick={deleteTub} className="btn btn-ghost" style={{ color: '#ff4444' }}>
@@ -201,6 +174,7 @@ const TubDetails = () => {
                 </div>
             )}
 
+            <PrintModal isOpen={isPrintModalOpen} onClose={() => setIsPrintModalOpen(false)} tub={tub} qrUrl={qrUrl} />
         </div>
     );
 };
