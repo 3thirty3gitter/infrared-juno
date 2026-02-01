@@ -59,6 +59,19 @@ export const AuthProvider = ({ children }) => {
                 return { data: { user: demoUser }, error: null };
             }
         },
+        signInWithGoogle: async () => {
+            try {
+                return await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: window.location.origin
+                    }
+                });
+            } catch (e) {
+                console.error("Google Sign-In failed:", e);
+                return { error: e };
+            }
+        },
         signOut: async () => {
             try {
                 await supabase.auth.signOut();
