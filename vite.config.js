@@ -13,6 +13,7 @@ export default defineConfig({
         name: 'BoxedUp',
         short_name: 'BoxedUp',
         description: 'Smart Storage Management using QR Codes',
+        start_url: '/',
         theme_color: '#0f0c29',
         background_color: '#0f0c29',
         display: 'standalone',
