@@ -1,20 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Html5Qrcode } from 'html5-qrcode';
 import { useNavigate } from 'react-router-dom';
-import { X, Camera } from 'lucide-react';
+import { X } from 'lucide-react';
 import './Scan.css';
 
 const Scan = () => {
     const navigate = useNavigate();
     const [error, setError] = useState(null);
-    const [hasPermission, setHasPermission] = useState(false);
+    const scannerRef = useRef(null);
+    const [isScanning, setIsScanning] = useState(false);
 
     useEffect(() => {
-        const html5QrCode = new Html5Qrcode("reader");
+        // Initialize scanner only once
+        if (!scannerRef.current) {
+            scannerRef.current = new Html5Qrcode("reader");
+        }
 
         const startScanning = async () => {
             try {
-                await html5QrCode.start(
+                await scannerRef.current.start(
                     { facingMode: "environment" },
                     {
                         fps: 10,
@@ -28,37 +32,15 @@ const Scan = () => {
                             };
                         },
                     },
-                    (decodedText, decodedResult) => {
-                        // Handle success
+                    (decodedText) => {
                         console.log("Scan success:", decodedText);
-                        try {
-                            // Attempt to parse JSON content
-                            const data = JSON.parse(decodedText);
-                            if (data.type === 'tub' && data.id) {
-                                html5QrCode.stop().then(() => {
-                                    navigate(`/tubs/${data.id}`);
-                                });
-                            } else {
-                                alert("Scanned data not recognized as a Tub: " + decodedText);
-                            }
-                        } catch (e) {
-                            // If not JSON, maybe it's just the uuid or a URL?
-                            // For now, assume it might be a UUID string if it matches format
-                            if (decodedText.includes('http')) {
-                                // Try to extract uuid from url if it matches our pattern
-                                // e.g. https://.../tubs/<uuid>
-                                // For now, simple alert
-                                alert("Scanned URL: " + decodedText);
-                            } else {
-                                alert("Scanned: " + decodedText);
-                            }
-                        }
+                        handleScan(decodedText);
                     },
                     (errorMessage) => {
-                        // parse error, ignore usually
+                        // ignore frame errors
                     }
                 );
-                setHasPermission(true);
+                setIsScanning(true);
             } catch (err) {
                 console.error("Error starting scanner", err);
                 setError("Could not start camera. Please ensure permissions are granted.");
@@ -68,17 +50,60 @@ const Scan = () => {
         startScanning();
 
         return () => {
-            // Cleanup
-            html5QrCode.stop().catch(err => console.error(err));
-            html5QrCode.clear();
+            if (scannerRef.current && scannerRef.current.isScanning) {
+                scannerRef.current.stop().catch(err => console.error("Failed to stop scanner on cleanup", err));
+            }
         };
-    }, [navigate]);
+    }, []);
+
+    const handleScan = async (decodedText) => {
+        try {
+            // Stop scanning first
+            await stopScanner();
+
+            // Logic to parse
+            try {
+                const data = JSON.parse(decodedText);
+                if (data.type === 'tub' && data.id) {
+                    navigate(`/tubs/${data.id}`);
+                } else {
+                    alert("Scanned data not recognized: " + decodedText);
+                    navigate('/dashboard');
+                }
+            } catch (e) {
+                if (decodedText.includes('http')) {
+                    alert("Scanned URL: " + decodedText);
+                } else {
+                    alert("Scanned: " + decodedText);
+                }
+                navigate('/dashboard');
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const stopScanner = async () => {
+        if (scannerRef.current && isScanning) {
+            try {
+                await scannerRef.current.stop();
+                setIsScanning(false);
+            } catch (err) {
+                console.error("Error stopping scanner", err);
+            }
+        }
+    };
+
+    const handleClose = async () => {
+        await stopScanner();
+        navigate('/dashboard');
+    };
 
     return (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'black', zIndex: 200 }}>
             {/* Overlay UI */}
             <div style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 210 }}>
-                <button onClick={() => navigate(-1)} style={{ background: 'rgba(0,0,0,0.5)', border: 'none', color: 'white', borderRadius: '50%', padding: '12px' }}>
+                <button onClick={handleClose} style={{ background: 'rgba(0,0,0,0.5)', border: 'none', color: 'white', borderRadius: '50%', padding: '12px', cursor: 'pointer' }}>
                     <X size={24} />
                 </button>
             </div>
