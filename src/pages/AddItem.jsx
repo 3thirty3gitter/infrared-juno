@@ -86,7 +86,6 @@ const AddItem = () => {
                     description,
                     image_url: imageUrl,
                     expiry_date: expiryDate || null,
-                    expiry_date: expiryDate || null,
                     tags: tags
                 }
             ]);
