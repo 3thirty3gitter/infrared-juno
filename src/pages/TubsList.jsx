@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Box, Plus, Search, Mic } from 'lucide-react';
 
 const TubsList = () => {
+    const [searchParams] = useSearchParams();
     const [tubs, setTubs] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [searchTerm, setSearchTerm] = useState('');
+    const [searchTerm, setSearchTerm] = useState(searchParams.get('q') || '');
 
     useEffect(() => {
         fetchTubs();

@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabaseClient';
-import { Download, LogOut, Settings, User } from 'lucide-react';
+import { Download, LogOut, Settings, User, Upload, Tag } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Profile = () => {
     const { user, signOut } = useAuth();
     const [stats, setStats] = useState({ tubs: 0, items: 0 });
     const [loading, setLoading] = useState(false);
+    const fileInputRef = useRef(null);
 
     useEffect(() => {
         fetchStats();
@@ -78,6 +80,67 @@ const Profile = () => {
         }
     };
 
+    const handleImportClick = () => {
+        if (fileInputRef.current) {
+            fileInputRef.current.click();
+        }
+    };
+
+    const handleFileImport = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (!window.confirm("This will merge the backup data into your account. Existing items with same IDs will be updated. Continue?")) {
+            e.target.value = null; // Reset
+            return;
+        }
+
+        setLoading(true);
+        const reader = new FileReader();
+
+        reader.onload = async (event) => {
+            try {
+                const json = JSON.parse(event.target.result);
+
+                if (!json.tubs || !json.items) {
+                    throw new Error("Invalid backup file format. Missing tubs or items.");
+                }
+
+                // Process Tubs
+                // Ensure we use the current user_id for security
+                const tubsToUpsert = json.tubs.map(t => ({
+                    ...t,
+                    user_id: user.id
+                }));
+
+                // Process Items
+                const itemsToUpsert = json.items.map(i => ({
+                    ...i,
+                    user_id: user.id
+                }));
+
+                // Upsert to Supabase
+                const { error: tubError } = await supabase.from('tubs').upsert(tubsToUpsert);
+                if (tubError) throw tubError;
+
+                const { error: itemError } = await supabase.from('items').upsert(itemsToUpsert);
+                if (itemError) throw itemError;
+
+                alert(`Success! Imported ${tubsToUpsert.length} tubs and ${itemsToUpsert.length} items.`);
+                fetchStats(); // Refresh stats
+
+            } catch (err) {
+                console.error("Import error:", err);
+                alert("Import failed: " + err.message);
+            } finally {
+                setLoading(false);
+                e.target.value = null;
+            }
+        };
+
+        reader.readAsText(file);
+    };
+
     return (
         <div className="container" style={{ paddingBottom: '100px' }}>
             <h1 style={{ marginBottom: '24px' }}>Profile</h1>
@@ -110,15 +173,45 @@ const Profile = () => {
 
             <h3 style={{ marginBottom: '16px', color: 'var(--color-text-muted)', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Data Management</h3>
 
-            <button onClick={handleBackup} className="glass-card btn" style={{ width: '100%', justifyContent: 'flex-start', padding: '16px', marginBottom: '16px', border: '1px solid rgba(255,255,255,0.1)' }}>
-                <div style={{ background: 'rgba(50, 255, 100, 0.1)', padding: '8px', borderRadius: '8px', marginRight: '16px' }}>
-                    <Download size={20} color="#32ff64" />
-                </div>
-                <div style={{ textAlign: 'left' }}>
-                    <div style={{ fontWeight: 600 }}>Download Backup</div>
-                    <div style={{ fontSize: '0.8rem', opacity: 0.6 }}>Export all data to JSON</div>
-                </div>
-            </button>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '32px' }}>
+                <button onClick={handleBackup} className="glass-card btn" style={{ width: '100%', justifyContent: 'flex-start', padding: '16px', margin: 0, border: '1px solid rgba(255,255,255,0.1)' }}>
+                    <div style={{ background: 'rgba(50, 255, 100, 0.1)', padding: '8px', borderRadius: '8px', marginRight: '16px' }}>
+                        <Download size={20} color="#32ff64" />
+                    </div>
+                    <div style={{ textAlign: 'left' }}>
+                        <div style={{ fontWeight: 600 }}>Download Backup</div>
+                        <div style={{ fontSize: '0.8rem', opacity: 0.6 }}>Export all data to JSON</div>
+                    </div>
+                </button>
+
+                <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleFileImport}
+                    accept=".json"
+                    style={{ display: 'none' }}
+                />
+
+                <button onClick={handleImportClick} className="glass-card btn" style={{ width: '100%', justifyContent: 'flex-start', padding: '16px', margin: 0, border: '1px solid rgba(255,255,255,0.1)' }}>
+                    <div style={{ background: 'rgba(50, 150, 255, 0.1)', padding: '8px', borderRadius: '8px', marginRight: '16px' }}>
+                        <Upload size={20} color="#3296ff" />
+                    </div>
+                    <div style={{ textAlign: 'left' }}>
+                        <div style={{ fontWeight: 600 }}>Import Backup</div>
+                        <div style={{ fontSize: '0.8rem', opacity: 0.6 }}>Restore from JSON file</div>
+                    </div>
+                </button>
+
+                <Link to="/tags" className="glass-card btn" style={{ width: '100%', justifyContent: 'flex-start', padding: '16px', margin: 0, border: '1px solid rgba(255,255,255,0.1)', textDecoration: 'none', color: 'inherit' }}>
+                    <div style={{ background: 'rgba(255, 150, 50, 0.1)', padding: '8px', borderRadius: '8px', marginRight: '16px' }}>
+                        <Tag size={20} color="#ff9632" />
+                    </div>
+                    <div style={{ textAlign: 'left' }}>
+                        <div style={{ fontWeight: 600 }}>Manage Tags</div>
+                        <div style={{ fontSize: '0.8rem', opacity: 0.6 }}>View and explore tags</div>
+                    </div>
+                </Link>
+            </div>
 
             <h3 style={{ marginBottom: '16px', color: 'var(--color-text-muted)', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Account</h3>
 

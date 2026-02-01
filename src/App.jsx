@@ -10,6 +10,7 @@ import TubDetails from './pages/TubDetails';
 import Scan from './pages/Scan';
 import AddItem from './pages/AddItem';
 import Profile from './pages/Profile';
+import Tags from './pages/Tags';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             <Route path="/tubs/:id/add" element={<AddItem />} />
             <Route path="/scan" element={<Scan />} />
             <Route path="/create" element={<CreateTub />} />
+            <Route path="/tags" element={<Tags />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/login" element={<Login />} />
           </Routes>

@@ -60,28 +60,29 @@
 - [x] Design Database Schema SQL script.
 
 ### Phase 3: Core Functionality (The "Tub" Logic)
-- [ ] Build "My Tubs" list view.
-- [ ] Build "Create Tub" form.
-- [ ] Implement QR Code generation (using `qrcode` lib).
-- [ ] Build "Tub Details" view (List of items).
+- [x] Build "My Tubs" list view.
+- [x] Build "Create Tub" form.
+- [x] Implement QR Code generation (using `qrcode` lib).
+- [x] Build "Tub Details" view (List of items).
+- [x] Implement Delete Tubs and Items functionality.
 
 ### Phase 4: Camera & Interactions
-- [ ] Implement Camera interface for Item photos.
-- [ ] Upload logic to Supabase Storage.
-- [ ] Implement QR Code Scanner.
+- [x] Implement Camera interface for Item photos.
+- [x] Upload logic to Supabase Storage.
+- [x] Implement QR Code Scanner.
 
 ### Phase 5: Search & Voice
-- [ ] Search Bar with tag filtering.
-- [ ] Web Speech API integration for "Voice Search".
+- [x] Search Bar with tag filtering. (Basic search implemented across Home and TubsList)
+- [x] Web Speech API integration for "Voice Search".
 
 ### Phase 6: Polish & PWA
-- [ ] Add Service Worker for offline capability/installability.
-- [ ] Generate app icons/manifest.json.
+- [x] Add Service Worker for offline capability/installability. (Implemented via vite-plugin-pwa)
+- [x] Generate app icons/manifest.json. (PWA Manifest created with icons)
 - [x] Final UI/UX Polish (animations, loading states).
 - [x] Printable PDF generation for QR labels.
 
 ### Phase 7: Enhancements (As Requested)
-- [ ] **Item Reminders**: Add expiry/rotation dates to items.
-- [ ] **Tags System**: UI for adding/filtering by tags (e.g. "Fragile", "Holiday").
+- [x] **Item Reminders**: Add expiry/rotation dates to items. (Expiring Items Dashboard added to Home)
+- [x] **Tags System**: UI for adding/filtering by tags. (Tag Manager and Search implemented)
 - [ ] **Home Assistant / Voice**: Enhance voice search to handle questions ("Where is...?").
-- [ ] **Data Backup**: Export inventory to CSV/JSON.
+- [x] **Data Backup**: Export inventory to CSV/JSON. (Full Import/Export JSON support)
