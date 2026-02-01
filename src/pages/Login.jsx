@@ -26,7 +26,7 @@ const Login = () => {
             } else if (view === 'login') {
                 const { error } = await signIn({ email, password });
                 if (error) throw error;
-                navigate('/');
+                navigate('/dashboard');
             } else if (view === 'forgot') {
                 const { error } = await resetPassword(email);
                 if (error) throw error;

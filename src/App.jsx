@@ -13,6 +13,7 @@ import Profile from './pages/Profile';
 import Tags from './pages/Tags';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import UpdatePassword from './pages/UpdatePassword';
+import Landing from './pages/Landing';
 
 function App() {
   return (
@@ -22,7 +23,8 @@ function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
 
-            <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+            <Route path="/" element={<Landing />} />
+            <Route path="/dashboard" element={<ProtectedRoute><Home /></ProtectedRoute>} />
             <Route path="/tubs" element={<ProtectedRoute><TubsList /></ProtectedRoute>} />
             <Route path="/tubs/:id" element={<ProtectedRoute><TubDetails /></ProtectedRoute>} />
             <Route path="/tubs/:id/add" element={<ProtectedRoute><AddItem /></ProtectedRoute>} />

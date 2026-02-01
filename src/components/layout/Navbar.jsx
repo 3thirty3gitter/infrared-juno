@@ -1,11 +1,18 @@
 import React from 'react';
 import { Home, Box, PlusCircle, ScanLine, User } from 'lucide-react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 
 const Navbar = () => {
+    const location = useLocation();
+
+    // Hide navbar on landing page and login page
+    if (location.pathname === '/' || location.pathname === '/login') {
+        return null;
+    }
+
     return (
         <nav className="nav-bar">
-            <NavLink to="/" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+            <NavLink to="/dashboard" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
                 <Home size={24} />
                 <span>Home</span>
             </NavLink>
