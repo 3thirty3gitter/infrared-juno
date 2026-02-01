@@ -3,6 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabaseClient';
 import { useNavigate } from 'react-router-dom';
 import { Save, ArrowLeft } from 'lucide-react';
+import { TUB_VARIANTS } from '../constants/tubVariants';
 
 const CreateTub = () => {
     const { user } = useAuth();
@@ -13,7 +14,7 @@ const CreateTub = () => {
         description: '',
         location: '',
         color: '#8a2be2',
-        icon: 'box'
+        icon: 'bin'
     });
 
     const colors = ['#8a2be2', '#ff0055', '#00ccff', '#ffcc00', '#00ff66', '#ffffff'];
@@ -39,7 +40,7 @@ const CreateTub = () => {
             navigate('/tubs');
         } catch (err) {
             console.error(err);
-            alert('Error creating tub: ' + err.message);
+            alert('Error creating container: ' + err.message);
         } finally {
             setLoading(false);
         }
@@ -51,18 +52,51 @@ const CreateTub = () => {
                 <ArrowLeft size={20} /> Back
             </button>
 
-            <h1>Create New Tub</h1>
+            <h1>Create New Container</h1>
 
             <form onSubmit={handleSubmit}>
                 <div className="glass-card">
-                    <label style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>Tub Name</label>
+                    {/* Storage Type Selector */}
+                    <label style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', display: 'block', marginBottom: '12px' }}>Storage Type</label>
+                    <div style={{
+                        display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))', gap: '12px', marginBottom: '24px'
+                    }}>
+                        {Object.values(TUB_VARIANTS).map((variant) => {
+                            const Icon = variant.icon;
+                            const isSelected = formData.icon === variant.id;
+                            return (
+                                <div
+                                    key={variant.id}
+                                    onClick={() => setFormData({ ...formData, icon: variant.id })}
+                                    style={{
+                                        background: isSelected ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.03)',
+                                        border: isSelected ? '2px solid var(--color-accent)' : '1px solid transparent',
+                                        borderRadius: '12px',
+                                        padding: '12px',
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        gap: '8px',
+                                        transition: 'all 0.2s'
+                                    }}
+                                >
+                                    <Icon size={24} color={isSelected ? 'var(--color-accent)' : 'var(--color-text-muted)'} />
+                                    <span style={{ fontSize: '0.75rem', color: isSelected ? 'white' : 'var(--color-text-muted)', textAlign: 'center' }}>
+                                        {variant.label}
+                                    </span>
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    <label style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>Container Name</label>
                     <input
                         type="text"
                         placeholder="e.g. Christmas Decor, Camping Gear"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         required
-                        autoFocus
                     />
 
                     <label style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>Location</label>
@@ -104,7 +138,7 @@ const CreateTub = () => {
                     style={{ width: '100%', padding: '16px', fontSize: '1.1rem' }}
                     disabled={loading}
                 >
-                    <Save size={20} /> {loading ? 'Creating...' : 'Create Tub'}
+                    <Save size={20} /> {loading ? 'Creating...' : 'Create Container'}
                 </button>
             </form>
         </div>

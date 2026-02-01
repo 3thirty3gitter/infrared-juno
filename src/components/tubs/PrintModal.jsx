@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { X, Printer, ShoppingCart, Check, ChevronRight, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { getVariantIcon, getVariantLabel } from '../../constants/tubVariants';
 
 const PrintModal = ({ isOpen, onClose, tub, qrUrl }) => {
     const [step, setStep] = useState('initial'); // 'initial', 'buy', 'format'
@@ -10,6 +12,12 @@ const PrintModal = ({ isOpen, onClose, tub, qrUrl }) => {
 
     const handlePrint = () => {
         const printWindow = window.open('', '_blank');
+        const VariantIcon = getVariantIcon(tub?.icon);
+        const variantLabel = getVariantLabel(tub?.icon).toUpperCase();
+
+        // Render icon to string
+        const iconSvg = renderToStaticMarkup(<VariantIcon size={40} strokeWidth={1.5} color="#000" />);
+        const iconSvgSmall = renderToStaticMarkup(<VariantIcon size={24} strokeWidth={1.5} color="#000" />);
 
         let css = `
             body { font-family: sans-serif; text-align: center; }
@@ -53,10 +61,12 @@ const PrintModal = ({ isOpen, onClose, tub, qrUrl }) => {
         if (format === 'single') {
             content = `
                 <div class="label-single">
-                    <h1>${tub?.name}</h1>
-                    <p>${tub?.description || ''}</p>
-                    <img src="${qrUrl}" width="200" style="display:block; margin: 10px auto;" />
-                    <small>ID: ${tub?.id?.slice(0, 8)}...</small>
+                    <div style="margin-bottom:8px;">${iconSvg}</div>
+                    <span style="font-size:0.75rem; letter-spacing:1px; display:block;">${variantLabel}</span>
+                    <h1 style="margin:4px 0 10px; font-size:1.5rem;">${tub?.name}</h1>
+                    <p style="margin:0 0 10px; font-size:0.9rem;">${tub?.description || ''}</p>
+                    <img src="${qrUrl}" width="180" style="display:block; margin: 0 auto;" />
+                    <small style="display:block; margin-top:8px; font-family:monospace;">ID: ${tub?.id?.slice(0, 8)}</small>
                 </div>
             `;
         } else if (format === '5160') {
@@ -65,8 +75,12 @@ const PrintModal = ({ isOpen, onClose, tub, qrUrl }) => {
                 <div class="label-5160">
                     <img src="${qrUrl}" width="60" height="60" />
                     <div style="text-align:left">
-                        <strong style="font-size:12px; display:block;">${tub?.name}</strong>
-                        <span>${tub?.id?.slice(0, 6)}</span>
+                         <div style="display:flex; align-items:center; gap:4px; margin-bottom:2px;">
+                            ${renderToStaticMarkup(<VariantIcon size={12} strokeWidth={2} color="#000" />)}
+                            <span style="font-size:8px; font-weight:bold;">${variantLabel}</span>
+                         </div>
+                        <strong style="font-size:11px; display:block; line-height:1.1;">${tub?.name}</strong>
+                        <span style="font-size:8px; font-family:monospace;">${tub?.id?.slice(0, 6)}</span>
                     </div>
                 </div>
              `;
@@ -78,7 +92,7 @@ const PrintModal = ({ isOpen, onClose, tub, qrUrl }) => {
                     width: 2in;
                     height: 2in;
                     float: left;
-                    border: 1px dashed #eee; /* Helper for view, removed in real usually */
+                    border: 1px dashed #eee; 
                     display: flex;
                     flex-direction: column;
                     align-items: center;
@@ -90,8 +104,10 @@ const PrintModal = ({ isOpen, onClose, tub, qrUrl }) => {
             `;
             const labelContent = `
                 <div class="label-22806">
-                     <strong style="margin-bottom:5px; font-size: 10px;">${tub?.name}</strong>
-                     <img src="${qrUrl}" width="120" height="120" />
+                     <div style="margin-bottom:2px;">${iconSvgSmall}</div>
+                     <span style="font-size:8px; letter-spacing:0.5px;">${variantLabel}</span>
+                     <strong style="margin:2px 0 4px; font-size: 11px; text-align:center; line-height:1.1;">${tub?.name}</strong>
+                     <img src="${qrUrl}" width="100" height="100" />
                 </div>
             `;
             content = `<div class="page-22806">${labelContent.repeat(12)}</div>`;

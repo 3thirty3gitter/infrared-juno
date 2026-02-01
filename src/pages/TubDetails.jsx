@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import QRCode from 'qrcode';
 import { ArrowLeft, Printer, Plus, Package, Trash2 } from 'lucide-react';
 import PrintModal from '../components/tubs/PrintModal';
+import { getVariantIcon, getVariantLabel } from '../constants/tubVariants';
 
 const TubDetails = () => {
     const { id } = useParams();
@@ -78,6 +78,8 @@ const TubDetails = () => {
     if (loading) return <div className="container" style={{ paddingTop: '40px', textAlign: 'center' }}>Loading...</div>;
     if (!tub) return <div className="container">Tub not found</div>;
 
+    const VariantIcon = getVariantIcon(tub.icon);
+
     return (
         <div className="container" style={{ paddingBottom: '100px' }}>
             <button onClick={() => navigate(-1)} className="btn btn-ghost" style={{ paddingLeft: 0, marginBottom: '16px' }}>
@@ -89,15 +91,39 @@ const TubDetails = () => {
                 borderTop: `4px solid ${tub.color}`
             }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <div>
-                        <h1 style={{ marginBottom: '4px' }}>{tub.name}</h1>
-                        <p style={{ fontSize: '1.1rem', color: 'var(--color-primary)' }}>{tub.location}</p>
-                        <p style={{ marginTop: '8px', opacity: 0.8 }}>{tub.description}</p>
+                    <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                        <div style={{
+                            background: 'rgba(255,255,255,0.1)',
+                            padding: '12px',
+                            borderRadius: '12px',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center'
+                        }}>
+                            <VariantIcon size={32} color={tub.color || 'white'} />
+                        </div>
+                        <div>
+                            <span style={{
+                                fontSize: '0.75rem',
+                                textTransform: 'uppercase',
+                                letterSpacing: '1px',
+                                color: 'rgba(255,255,255,0.6)',
+                                display: 'block',
+                                marginBottom: '4px'
+                            }}>
+                                {getVariantLabel(tub.icon)}
+                            </span>
+                            <h1 style={{ marginBottom: '4px', fontSize: '1.5rem', lineHeight: 1.2 }}>{tub.name}</h1>
+                            <p style={{ fontSize: '1rem', color: 'var(--color-primary)' }}>{tub.location}</p>
+                        </div>
                     </div>
+
                     <div style={{ background: 'white', padding: '8px', borderRadius: '12px' }}>
-                        {qrUrl && <img src={qrUrl} alt="QR Code" style={{ width: '80px', height: '80px', display: 'block' }} />}
+                        {qrUrl && <img src={qrUrl} alt="QR Code" style={{ width: '60px', height: '60px', display: 'block' }} />}
                     </div>
                 </div>
+
+                {tub.description && (
+                    <p style={{ marginTop: '16px', opacity: 0.8, fontSize: '0.95rem' }}>{tub.description}</p>
+                )}
 
                 <div style={{ marginTop: '20px', display: 'flex', gap: '12px', justifyContent: 'space-between', alignItems: 'center' }}>
                     <button onClick={() => setIsPrintModalOpen(true)} className="btn btn-ghost" style={{ border: '1px solid rgba(255,255,255,0.2)' }}>

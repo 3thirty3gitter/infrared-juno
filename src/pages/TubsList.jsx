@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { Box, Plus, Search, Mic, ArrowLeft } from 'lucide-react';
+import { getVariantIcon } from '../constants/tubVariants';
 
 const TubsList = () => {
     const [searchParams] = useSearchParams();
@@ -93,29 +94,32 @@ const TubsList = () => {
                             <Link to="/create" className="btn btn-ghost" style={{ marginTop: '8px' }}>Create one now</Link>
                         </div>
                     ) : (
-                        filteredTubs.map((tub) => (
-                            <Link key={tub.id} to={`/tubs/${tub.id}`} className="glass-card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: 'transform 0.2s' }}>
-                                <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-                                    <div style={{
-                                        width: '48px', height: '48px',
-                                        background: tub.color ? tub.color + '33' : 'rgba(255,255,255,0.1)', // 33 is ~20% opacity
-                                        borderRadius: '12px',
-                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                        border: `1px solid ${tub.color || 'var(--color-primary)'}`
-                                    }}>
-                                        <Box size={24} color={tub.color || 'var(--color-primary)'} />
+                        filteredTubs.map((tub) => {
+                            const VariantIcon = getVariantIcon(tub.icon);
+                            return (
+                                <Link key={tub.id} to={`/tubs/${tub.id}`} className="glass-card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: 'transform 0.2s' }}>
+                                    <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                                        <div style={{
+                                            width: '48px', height: '48px',
+                                            background: tub.color ? tub.color + '33' : 'rgba(255,255,255,0.1)', // 33 is ~20% opacity
+                                            borderRadius: '12px',
+                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                            border: `1px solid ${tub.color || 'var(--color-primary)'}`
+                                        }}>
+                                            <VariantIcon size={24} color={tub.color || 'var(--color-primary)'} />
+                                        </div>
+                                        <div>
+                                            <h3 style={{ fontSize: '1.2rem', fontWeight: 600 }}>{tub.name}</h3>
+                                            <p style={{ fontSize: '0.85rem' }}>
+                                                <span style={{ opacity: 0.7 }}>{tub.location}</span>
+                                                {tub.description && <span style={{ opacity: 0.5 }}> • {tub.description.substring(0, 20)}{tub.description.length > 20 ? '...' : ''}</span>}
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h3 style={{ fontSize: '1.2rem', fontWeight: 600 }}>{tub.name}</h3>
-                                        <p style={{ fontSize: '0.85rem' }}>
-                                            <span style={{ opacity: 0.7 }}>{tub.location}</span>
-                                            {tub.description && <span style={{ opacity: 0.5 }}> • {tub.description.substring(0, 20)}{tub.description.length > 20 ? '...' : ''}</span>}
-                                        </p>
-                                    </div>
-                                </div>
-                                <div style={{ color: 'var(--color-text-muted)' }}>&gt;</div>
-                            </Link>
-                        ))
+                                    <div style={{ color: 'var(--color-text-muted)' }}>&gt;</div>
+                                </Link>
+                            );
+                        })
                     )}
                 </div>
             )}
