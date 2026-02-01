@@ -30,7 +30,7 @@ const TubDetails = () => {
 
             // Generate QR Code
             const qrContent = JSON.stringify({ type: 'tub', id: tubData.id, name: tubData.name });
-            const url = await QRCode.toDataURL(qrContent, { width: 300, margin: 2, color: { dark: tubData.color || '#000000', light: '#ffffff' } });
+            const url = await QRCode.toDataURL(qrContent, { width: 300, margin: 2, color: { dark: '#000000', light: '#ffffff' } });
             setQrUrl(url);
 
             // Fetch Items
