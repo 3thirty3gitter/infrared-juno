@@ -4,74 +4,40 @@ import { Link } from 'react-router-dom';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { getVariantIcon, getVariantLabel } from '../../constants/tubVariants';
 
-const PrintModal = ({ isOpen, onClose, tub, qrUrl }) => {
-    const [step, setStep] = useState('initial'); // 'initial', 'buy', 'format'
-    const [format, setFormat] = useState('single'); // 'single', '5160', '22806'
+const PrintModal = ({ isOpen, onClose, items, tub, qrUrl }) => {
+    const [step, setStep] = useState('initial');
+    const [format, setFormat] = useState('single');
+
+    // Normalize input: If 'items' (batch) provided, use it. Else use single 'tub'+'qrUrl'.
+    const printItems = items && items.length > 0 ? items : (tub ? [{ tub, qrUrl }] : []);
 
     if (!isOpen) return null;
 
     const handlePrint = () => {
         const printWindow = window.open('', '_blank');
-        const VariantIcon = getVariantIcon(tub?.icon);
-        const variantLabel = getVariantLabel(tub?.icon).toUpperCase();
 
-        // Render icon to string
-        const iconSvg = renderToStaticMarkup(<VariantIcon size={40} strokeWidth={1.5} color="#000" />);
-        const iconSvgSmall = renderToStaticMarkup(<VariantIcon size={24} strokeWidth={1.5} color="#000" />);
+        // --- Helper to Generate HTML for One Item ---
+        const generateLabelHtml = (item, type) => {
+            const { tub, qrUrl } = item;
+            const VariantIcon = getVariantIcon(tub?.icon);
+            const variantLabel = getVariantLabel(tub?.icon).toUpperCase();
 
-        let css = `
-            body { font-family: sans-serif; text-align: center; }
-            .label-single { 
-                border: 2px solid #000; 
-                padding: 20px; 
-                width: 300px; 
-                margin: 40px auto; 
-                border-radius: 12px;
-                page-break-inside: avoid;
-            }
-            .label-5160 {
-                width: 2.625in;
-                height: 1in;
-                padding: 0.1in;
-                float: left;
-                text-align: center;
-                overflow: hidden;
-                box-sizing: border-box;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 10px;
-                font-size: 10px;
-            }
-            /* Avery 5160 Page Layout */
-            .page-5160 {
-                width: 8.5in;
-                margin: 0 auto;
-            }
-            
-            /* Print Utilities */
-            @media print {
-                @page { margin: 0.5in; }
-                button { display: none; }
-            }
-        `;
+            const iconSvg = renderToStaticMarkup(<VariantIcon size={40} strokeWidth={1.5} color="#000" />);
+            const iconSvgSmall = renderToStaticMarkup(<VariantIcon size={24} strokeWidth={1.5} color="#000" />);
 
-        let content = '';
-
-        if (format === 'single') {
-            content = `
-                <div class="label-single">
-                    <div style="margin-bottom:8px;">${iconSvg}</div>
-                    <span style="font-size:0.75rem; letter-spacing:1px; display:block;">${variantLabel}</span>
-                    <h1 style="margin:4px 0 10px; font-size:1.5rem;">${tub?.name}</h1>
-                    <p style="margin:0 0 10px; font-size:0.9rem;">${tub?.description || ''}</p>
-                    <img src="${qrUrl}" width="180" style="display:block; margin: 0 auto;" />
-                    <small style="display:block; margin-top:8px; font-family:monospace;">ID: ${tub?.id?.slice(0, 8)}</small>
-                </div>
-            `;
-        } else if (format === '5160') {
-            // 30 labels per sheet
-            const labelContent = `
+            if (type === 'single') {
+                return `
+                    <div class="label-single" style="page-break-after: always;">
+                        <div style="margin-bottom:8px;">${iconSvg}</div>
+                        <span style="font-size:0.75rem; letter-spacing:1px; display:block;">${variantLabel}</span>
+                        <h1 style="margin:4px 0 10px; font-size:1.5rem;">${tub?.name}</h1>
+                        <p style="margin:0 0 10px; font-size:0.9rem;">${tub?.description || ''}</p>
+                        <img src="${qrUrl}" width="180" style="display:block; margin: 0 auto;" />
+                        <small style="display:block; margin-top:8px; font-family:monospace;">ID: ${tub?.id?.slice(0, 8)}</small>
+                    </div>
+                `;
+            } else if (type === '5160') {
+                return `
                 <div class="label-5160">
                     <img src="${qrUrl}" width="60" height="60" />
                     <div style="text-align:left">
@@ -83,40 +49,113 @@ const PrintModal = ({ isOpen, onClose, tub, qrUrl }) => {
                         <span style="font-size:8px; font-family:monospace;">${tub?.id?.slice(0, 6)}</span>
                     </div>
                 </div>
-             `;
-            content = `<div class="page-5160">${labelContent.repeat(30)}</div>`;
-        } else if (format === '22806') {
-            // Square 2x2
-            css += `
-                .label-22806 {
-                    width: 2in;
-                    height: 2in;
-                    float: left;
-                    border: 1px dashed #eee; 
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    box-sizing: border-box;
-                    padding: 5px;
-                }
-                .page-22806 { width: 8.5in; }
-            `;
-            const labelContent = `
+               `;
+            } else if (type === '22806') {
+                return `
                 <div class="label-22806">
                      <div style="margin-bottom:2px;">${iconSvgSmall}</div>
                      <span style="font-size:8px; letter-spacing:0.5px;">${variantLabel}</span>
                      <strong style="margin:2px 0 4px; font-size: 11px; text-align:center; line-height:1.1;">${tub?.name}</strong>
                      <img src="${qrUrl}" width="100" height="100" />
                 </div>
-            `;
-            content = `<div class="page-22806">${labelContent.repeat(12)}</div>`;
+               `;
+            }
+        };
+
+        let css = `
+            body { font-family: sans-serif; text-align: center; margin: 0; padding: 0; }
+            
+            .label-single { 
+                border: 2px solid #000; 
+                padding: 20px; 
+                width: 300px; 
+                margin: 40px auto; 
+                border-radius: 12px;
+                page-break-inside: avoid;
+            }
+            
+            /* Avery 5160: 30 per sheet (3x10). 1" x 2-5/8" */
+            /* Sheet: 8.5 x 11 */
+            /* Margins: Top 0.5", Bottom 0.5", Left 0.19", Right 0.19" */
+            /* Spacing: H-Gap 0.12", V-Gap 0 */
+            .page-5160 {
+                width: 8.5in;
+                margin: 0 auto;
+                padding-top: 0.5in;
+                padding-left: 0.19in;
+                padding-right: 0.19in;
+                box-sizing: border-box; 
+                /* Ensures grid wraps correctly */
+                display: flex;
+                flex-wrap: wrap;
+                align-content: flex-start;
+            }
+            .label-5160 {
+                width: 2.625in;
+                height: 1in;
+                /* float: left; - Flexbox is safer */
+                text-align: center;
+                overflow: hidden;
+                box-sizing: border-box;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                font-size: 10px;
+                /* Avery Gaps - Right margin usually 0.12in between cols */
+                margin-right: 0.12in; 
+                margin-bottom: 0; 
+            }
+            /* Reset margin for 3rd column to fit? Avery cols are 2.625 * 3 = 7.875. + 0.24 gap = 8.115. Page 8.5. Fits. */
+            /* We can just let it flow. If printer scale 100%, it should hit. */
+
+            /* Avery 22806: 12 per sheet (3x4). 2" x 2" */
+            /* Margins: Top 1.5", Bottom 1.5"? No, usually tailored. */
+            .page-22806 { 
+                width: 8.5in; 
+                padding-top: 0.6in; /* Verified approx */
+                padding-left: 0.6in;
+                margin: 0 auto;
+                display: flex;
+                flex-wrap: wrap;
+            }
+            .label-22806 {
+                width: 2in;
+                height: 2in;
+                border: 1px dashed #eee; 
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                box-sizing: border-box;
+                padding: 5px;
+                margin-right: 0.6in; /* Gap */
+                margin-bottom: 0.6in; /* Gap */
+            }
+            
+            /* Print Utilities */
+            @media print {
+                @page { margin: 0; } /* We handle margins in container */
+                button { display: none; }
+            }
+        `;
+
+        // Generate Loop
+        let generatedLabels = printItems.map(item => generateLabelHtml(item, format)).join('');
+
+        let content = '';
+        if (format === 'single') {
+            content = generatedLabels; // just breaks
+        } else if (format === '5160') {
+            content = `<div class="page-5160">${generatedLabels}</div>`;
+        } else if (format === '22806') {
+            content = `<div class="page-22806">${generatedLabels}</div>`;
         }
 
         printWindow.document.write(`
             <html>
                 <head>
-                    <title>Print Label - ${tub?.name}</title>
+                    <title>Print Labels (${printItems.length})</title>
                     <style>${css}</style>
                 </head>
                 <body>
@@ -147,7 +186,14 @@ const PrintModal = ({ isOpen, onClose, tub, qrUrl }) => {
                 {/* --- INITIAL STEP --- */}
                 {step === 'initial' && (
                     <div style={{ padding: '20px', textAlign: 'center' }}>
-                        <h2 style={{ marginBottom: '24px' }}>Print Label</h2>
+                        <h2 style={{ marginBottom: '24px' }}>Print Label{printItems.length > 1 ? 's' : ''}</h2>
+
+                        {printItems.length > 1 && (
+                            <p style={{ color: 'var(--color-accent)', marginBottom: '16px' }}>
+                                {printItems.length} items selected for batch printing.
+                            </p>
+                        )}
+
                         <div style={{ display: 'grid', gap: '16px' }}>
                             <button
                                 onClick={() => setStep('buy')}
@@ -226,6 +272,12 @@ const PrintModal = ({ isOpen, onClose, tub, qrUrl }) => {
                         </div>
 
                         <div style={{ marginBottom: '20px' }}>
+                            {printItems.length > 1 && (
+                                <div style={{ fontSize: '0.85rem', color: 'var(--color-accent)', marginBottom: '12px', background: 'rgba(0,255,255,0.1)', padding: '8px', borderRadius: '8px' }}>
+                                    Batch Mode: {printItems.length} items will be filtered onto the selected template.
+                                </div>
+                            )}
+
                             <label className="glass-card" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '16px', cursor: 'pointer', marginBottom: '8px', border: format === 'single' ? '1px solid var(--color-accent)' : '1px solid transparent' }}>
                                 <input type="radio" name="format" checked={format === 'single'} onChange={() => setFormat('single')} style={{ width: '20px', height: '20px' }} />
                                 <div>
@@ -249,6 +301,10 @@ const PrintModal = ({ isOpen, onClose, tub, qrUrl }) => {
                                     <span style={{ fontSize: '0.8rem', color: '#aaa' }}>Avery 5160 (30 per sheet)</span>
                                 </div>
                             </label>
+                        </div>
+
+                        <div style={{ background: 'rgba(255,255,255,0.1)', padding: '12px', borderRadius: '8px', marginBottom: '20px', fontSize: '0.8rem', color: '#ddd' }}>
+                            <strong>⚠️ Important:</strong> Set print margins to "None" and Scale to "100%" for precise alignment.
                         </div>
 
                         <button onClick={handlePrint} className="btn btn-primary" style={{ width: '100%', padding: '16px', fontSize: '1.1rem' }}>
