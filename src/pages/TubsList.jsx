@@ -147,91 +147,106 @@ const TubsList = () => {
             {loading ? (
                 <p style={{ textAlign: 'center', color: 'var(--color-text-muted)' }}>Loading storage...</p>
             ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    {filteredTubs.length === 0 ? (
-                        <div style={{ textAlign: 'center', padding: '40px 0', opacity: 0.7 }}>
-                            <Box size={48} color="var(--color-text-muted)" style={{ marginBottom: '16px' }} />
-                            <p>No tubs found.</p>
-                            <Link to="/create" className="btn btn-ghost" style={{ marginTop: '8px' }}>Create one now</Link>
-                        </div>
-                    ) : (
-                        filteredTubs.map((tub) => {
-                            const VariantIcon = getVariantIcon(tub.icon);
-                            const isSelected = selectedIds.has(tub.id);
+                <>
+                    <style>{`
+                        .tubs-grid {
+                            display: flex;
+                            flex-direction: column;
+                            gap: 16px;
+                        }
+                        @media (min-width: 768px) {
+                            .tubs-grid {
+                                display: grid;
+                                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                                gap: 20px;
+                            }
+                        }
+                    `}</style>
+                    <div className="tubs-grid">
+                        {filteredTubs.length === 0 ? (
+                            <div style={{ textAlign: 'center', padding: '40px 0', opacity: 0.7 }}>
+                                <Box size={48} color="var(--color-text-muted)" style={{ marginBottom: '16px' }} />
+                                <p>No tubs found.</p>
+                                <Link to="/create" className="btn btn-ghost" style={{ marginTop: '8px' }}>Create one now</Link>
+                            </div>
+                        ) : (
+                            filteredTubs.map((tub) => {
+                                const VariantIcon = getVariantIcon(tub.icon);
+                                const isSelected = selectedIds.has(tub.id);
 
-                            return (
-                                <div
-                                    key={tub.id}
-                                    onClick={(e) => {
-                                        if (isSelectionMode) {
-                                            e.preventDefault();
-                                            toggleSelection(tub.id);
-                                        }
-                                    }}
-                                    style={{ position: 'relative' }}
-                                >
-                                    <Link
-                                        to={isSelectionMode ? '#' : `/tubs/${tub.id}`}
-                                        className="glass-card"
-                                        style={{
-                                            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                                            border: isSelected ? '1px solid var(--color-accent)' : 'none',
-                                            background: isSelected ? 'rgba(0, 210, 255, 0.1)' : undefined
+                                return (
+                                    <div
+                                        key={tub.id}
+                                        onClick={(e) => {
+                                            if (isSelectionMode) {
+                                                e.preventDefault();
+                                                toggleSelection(tub.id);
+                                            }
                                         }}
+                                        style={{ position: 'relative' }}
                                     >
-                                        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-                                            {/* Checkbox for Selection Mode */}
-                                            {isSelectionMode && (
-                                                <div style={{ color: isSelected ? 'var(--color-accent)' : '#666' }}>
-                                                    {isSelected ? <CheckSquare size={24} /> : <Square size={24} />}
+                                        <Link
+                                            to={isSelectionMode ? '#' : `/tubs/${tub.id}`}
+                                            className="glass-card"
+                                            style={{
+                                                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                                                border: isSelected ? '1px solid var(--color-accent)' : 'none',
+                                                background: isSelected ? 'rgba(0, 210, 255, 0.1)' : undefined
+                                            }}
+                                        >
+                                            <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                                                {/* Checkbox for Selection Mode */}
+                                                {isSelectionMode && (
+                                                    <div style={{ color: isSelected ? 'var(--color-accent)' : '#666' }}>
+                                                        {isSelected ? <CheckSquare size={24} /> : <Square size={24} />}
+                                                    </div>
+                                                )}
+
+                                                <div style={{
+                                                    width: '48px', height: '48px',
+                                                    background: tub.color ? tub.color + '33' : 'rgba(255,255,255,0.1)',
+                                                    borderRadius: '12px',
+                                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                    border: `1px solid ${tub.color || 'var(--color-primary)'}`
+                                                }}>
+                                                    <VariantIcon size={24} color={tub.color || 'var(--color-primary)'} />
                                                 </div>
-                                            )}
+                                                <div>
+                                                    <h3 style={{ fontSize: '1.2rem', fontWeight: 600 }}>{tub.name}</h3>
+                                                    <p style={{ fontSize: '0.85rem' }}>
+                                                        <span style={{ opacity: 0.7 }}>{tub.location}</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            {!isSelectionMode && <div style={{ color: 'var(--color-text-muted)' }}>&gt;</div>}
+                                        </Link>
+                                    </div>
+                                );
+                            })
+                        )}
+                    </div>
+            )}
 
-                                            <div style={{
-                                                width: '48px', height: '48px',
-                                                background: tub.color ? tub.color + '33' : 'rgba(255,255,255,0.1)',
-                                                borderRadius: '12px',
-                                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                border: `1px solid ${tub.color || 'var(--color-primary)'}`
-                                            }}>
-                                                <VariantIcon size={24} color={tub.color || 'var(--color-primary)'} />
-                                            </div>
-                                            <div>
-                                                <h3 style={{ fontSize: '1.2rem', fontWeight: 600 }}>{tub.name}</h3>
-                                                <p style={{ fontSize: '0.85rem' }}>
-                                                    <span style={{ opacity: 0.7 }}>{tub.location}</span>
-                                                </p>
-                                            </div>
-                                        </div>
-                                        {!isSelectionMode && <div style={{ color: 'var(--color-text-muted)' }}>&gt;</div>}
-                                    </Link>
-                                </div>
-                            );
-                        })
+                    {/* Batch Print Action */}
+                    {isSelectionMode && selectedIds.size > 0 && (
+                        <div style={{ position: 'fixed', bottom: '100px', left: '50%', transform: 'translateX(-50%)', zIndex: 90 }}>
+                            <button
+                                onClick={prepareBatchPrint}
+                                className="btn btn-primary"
+                                style={{ padding: '12px 24px', borderRadius: '50px', boxShadow: '0 4px 20px rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', gap: '8px' }}
+                            >
+                                <Printer size={20} /> Print {selectedIds.size} Labels
+                            </button>
+                        </div>
                     )}
-                </div>
-            )}
 
-            {/* Batch Print Action */}
-            {isSelectionMode && selectedIds.size > 0 && (
-                <div style={{ position: 'fixed', bottom: '100px', left: '50%', transform: 'translateX(-50%)', zIndex: 90 }}>
-                    <button
-                        onClick={prepareBatchPrint}
-                        className="btn btn-primary"
-                        style={{ padding: '12px 24px', borderRadius: '50px', boxShadow: '0 4px 20px rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', gap: '8px' }}
-                    >
-                        <Printer size={20} /> Print {selectedIds.size} Labels
-                    </button>
+                    <PrintModal
+                        isOpen={isPrintModalOpen}
+                        onClose={() => setIsPrintModalOpen(false)}
+                        items={printData} // Pass array
+                    />
                 </div>
-            )}
-
-            <PrintModal
-                isOpen={isPrintModalOpen}
-                onClose={() => setIsPrintModalOpen(false)}
-                items={printData} // Pass array
-            />
-        </div>
-    );
+            );
 };
 
-export default TubsList;
+            export default TubsList;

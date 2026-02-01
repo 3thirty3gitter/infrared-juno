@@ -12,6 +12,17 @@ const Navbar = () => {
 
     return (
         <nav className="nav-bar">
+            {/* Desktop Logo Area */}
+            <div className="desktop-logo" style={{ marginBottom: '40px', padding: '0 32px', width: '100%', display: 'none' }}>
+                <h1 style={{ fontSize: '1.8rem', margin: 0 }}>Juno</h1>
+                <p style={{ fontSize: '0.8rem', opacity: 0.7 }}>Inventory OS</p>
+            </div>
+            <style>{`
+                @media (min-width: 768px) {
+                    .desktop-logo { display: block !important; }
+                }
+            `}</style>
+
             <NavLink to="/dashboard" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
                 <Home size={24} />
                 <span>Home</span>
@@ -22,12 +33,17 @@ const Navbar = () => {
                 <span>Tubs</span>
             </NavLink>
 
-            <div style={{ width: '40px' }}></div> {/* Spacer for FAB */}
-
             <NavLink to="/create" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
                 <PlusCircle size={24} />
                 <span>Add</span>
             </NavLink>
+
+            <NavLink to="/scan" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+                <ScanLine size={24} />
+                <span>Scan</span>
+            </NavLink>
+
+            <div style={{ flex: 1 }}></div>
 
             <NavLink to="/profile" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
                 <User size={24} />

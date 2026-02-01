@@ -61,7 +61,16 @@ button {
   /* Mobile focused */
   margin: 0 auto;
   padding: 20px;
+  width: 100%;
 }
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 1200px;
+    padding: 40px;
+  }
+}
+
 
 /* Glass Component */
 .glass-card {
@@ -192,6 +201,28 @@ textarea:focus {
   z-index: 90;
 }
 
+@media (min-width: 768px) {
+  body {
+    padding-bottom: 0;
+    padding-left: 250px;
+  }
+
+  .nav-bar {
+    top: 0;
+    bottom: 0;
+    right: auto;
+    width: 250px;
+    height: 100vh;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 20px 0;
+    border-top: none;
+    border-right: 1px solid var(--glass-border);
+    background: rgba(15, 12, 41, 0.95);
+  }
+}
+
+
 .nav-item {
   color: var(--color-text-muted);
   display: flex;
@@ -199,7 +230,29 @@ textarea:focus {
   align-items: center;
   font-size: 0.75rem;
   gap: 4px;
+  transition: all 0.2s;
 }
+
+@media (min-width: 768px) {
+  .nav-item {
+    flex-direction: row;
+    width: 100%;
+    padding: 16px 32px;
+    font-size: 1rem;
+    gap: 12px;
+  }
+
+  .nav-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+  }
+
+  .nav-item.active {
+    border-right: 3px solid var(--color-accent);
+    background: linear-gradient(90deg, transparent, rgba(0, 210, 255, 0.05));
+  }
+}
+
 
 .nav-item.active {
   color: var(--color-accent);
