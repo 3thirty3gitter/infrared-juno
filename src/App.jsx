@@ -15,6 +15,8 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import UpdatePassword from './pages/UpdatePassword';
 import Landing from './pages/Landing';
 
+import InstallPrompt from './components/pwa/InstallPrompt';
+
 function App() {
   return (
     <Router>
@@ -35,6 +37,7 @@ function App() {
             <Route path="/update-password" element={<ProtectedRoute><UpdatePassword /></ProtectedRoute>} />
           </Routes>
           <Navbar />
+          <InstallPrompt />
         </div>
       </AuthProvider>
     </Router>
