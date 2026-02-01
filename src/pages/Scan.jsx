@@ -17,8 +17,15 @@ const Scan = () => {
                     { facingMode: "environment" },
                     {
                         fps: 10,
-                        qrbox: { width: 250, height: 250 },
-                        aspectRatio: 1.0
+                        qrbox: (viewfinderWidth, viewfinderHeight) => {
+                            const minEdgePercentage = 0.7;
+                            const minEdgeSize = Math.min(viewfinderWidth, viewfinderHeight);
+                            const qrboxSize = Math.floor(minEdgeSize * minEdgePercentage);
+                            return {
+                                width: qrboxSize,
+                                height: qrboxSize
+                            };
+                        },
                     },
                     (decodedText, decodedResult) => {
                         // Handle success
