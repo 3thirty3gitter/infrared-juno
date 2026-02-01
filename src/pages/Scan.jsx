@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Html5Qrcode } from 'html5-qrcode';
 import { useNavigate } from 'react-router-dom';
 import { X, Camera } from 'lucide-react';
+import './Scan.css';
 
 const Scan = () => {
     const navigate = useNavigate();
@@ -88,7 +89,7 @@ const Scan = () => {
             </div>
 
             {/* Camera Viewport */}
-            <div id="reader" style={{ width: '100%', height: '100%' }}></div>
+            <div id="reader" style={{ width: '100%', height: '100%', position: 'relative', overflow: 'hidden' }}></div>
 
             {error && (
                 <div style={{ position: 'absolute', bottom: '100px', left: '20px', right: '20px', background: 'rgba(255,0,0,0.8)', padding: '16px', borderRadius: '8px', color: 'white', textAlign: 'center' }}>
