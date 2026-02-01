@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Scan, Mic, ArrowRight, Smartphone, Zap, Cloud } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -6,6 +6,12 @@ import { useAuth } from '../contexts/AuthContext';
 const Landing = () => {
     const navigate = useNavigate();
     const { user } = useAuth();
+
+    useEffect(() => {
+        if (user) {
+            navigate('/dashboard');
+        }
+    }, [user, navigate]);
 
     const handleGetStarted = () => {
         if (user) {
