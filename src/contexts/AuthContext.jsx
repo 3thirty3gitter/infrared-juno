@@ -66,6 +66,24 @@ export const AuthProvider = ({ children }) => {
             setUser(null);
             setSession(null);
         },
+        resetPassword: async (email) => {
+            try {
+                return await supabase.auth.resetPasswordForEmail(email, {
+                    redirectTo: window.location.origin + '/update-password'
+                });
+            } catch (e) {
+                console.error("Reset password error:", e);
+                return { error: e };
+            }
+        },
+        updatePassword: async (password) => {
+            try {
+                return await supabase.auth.updateUser({ password });
+            } catch (e) {
+                console.error("Update password error:", e);
+                return { error: e };
+            }
+        },
         user,
         session,
     };

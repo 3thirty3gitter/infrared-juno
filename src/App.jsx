@@ -11,6 +11,8 @@ import Scan from './pages/Scan';
 import AddItem from './pages/AddItem';
 import Profile from './pages/Profile';
 import Tags from './pages/Tags';
+import ProtectedRoute from './components/auth/ProtectedRoute';
+import UpdatePassword from './pages/UpdatePassword';
 
 function App() {
   return (
@@ -18,15 +20,17 @@ function App() {
       <AuthProvider>
         <div className="app-wrapper">
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/tubs" element={<TubsList />} />
-            <Route path="/tubs/:id" element={<TubDetails />} />
-            <Route path="/tubs/:id/add" element={<AddItem />} />
-            <Route path="/scan" element={<Scan />} />
-            <Route path="/create" element={<CreateTub />} />
-            <Route path="/tags" element={<Tags />} />
-            <Route path="/profile" element={<Profile />} />
             <Route path="/login" element={<Login />} />
+
+            <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+            <Route path="/tubs" element={<ProtectedRoute><TubsList /></ProtectedRoute>} />
+            <Route path="/tubs/:id" element={<ProtectedRoute><TubDetails /></ProtectedRoute>} />
+            <Route path="/tubs/:id/add" element={<ProtectedRoute><AddItem /></ProtectedRoute>} />
+            <Route path="/scan" element={<ProtectedRoute><Scan /></ProtectedRoute>} />
+            <Route path="/create" element={<ProtectedRoute><CreateTub /></ProtectedRoute>} />
+            <Route path="/tags" element={<ProtectedRoute><Tags /></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="/update-password" element={<ProtectedRoute><UpdatePassword /></ProtectedRoute>} />
           </Routes>
           <Navbar />
         </div>

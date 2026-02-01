@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
-import { Link, useSearchParams } from 'react-router-dom';
-import { Box, Plus, Search, Mic } from 'lucide-react';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
+import { Box, Plus, Search, Mic, ArrowLeft } from 'lucide-react';
 
 const TubsList = () => {
     const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
     const [tubs, setTubs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState(searchParams.get('q') || '');
@@ -55,6 +56,10 @@ const TubsList = () => {
 
     return (
         <div className="container" style={{ paddingBottom: '100px' }}>
+            <button onClick={() => navigate(-1)} className="btn btn-ghost" style={{ paddingLeft: 0, marginBottom: '16px' }}>
+                <ArrowLeft size={20} /> Back
+            </button>
+
             <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
                 <h1>My Tubs</h1>
                 <Link to="/create" className="btn btn-primary" style={{ padding: '8px 16px' }}>
