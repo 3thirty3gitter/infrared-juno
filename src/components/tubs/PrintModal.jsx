@@ -59,6 +59,41 @@ const PrintModal = ({ isOpen, onClose, items, tub, qrUrl }) => {
                      <img src="${qrUrl}" width="100" height="100" />
                 </div>
                `;
+            } else if (type === 'thermal-4x6') {
+                return `
+                <div class="label-thermal-4x6">
+                     <div style="margin-bottom:8px;">${iconSvg}</div>
+                     <span style="font-size:0.9rem; letter-spacing:1px; display:block;">${variantLabel}</span>
+                     <h1 style="margin:8px 0 12px; font-size:2.5rem; line-height:1.1;">${tub?.name}</h1>
+                     <p style="margin:0 0 16px; font-size:1.2rem;">${tub?.description || ''}</p>
+                     <img src="${qrUrl}" width="250" height="250" />
+                     <small style="display:block; margin-top:12px; font-family:monospace; font-size: 1rem;">ID: ${tub?.id?.slice(0, 8)}</small>
+                </div>
+               `;
+            } else if (type === 'thermal-3x2') {
+                return `
+                <div class="label-thermal-3x2">
+                     <div style="display:flex; align-items:center; gap:8px; justify-content:center; margin-bottom:4px;">
+                        ${renderToStaticMarkup(<VariantIcon size={20} strokeWidth={2} color="#000" />)}
+                        <span style="font-size:0.7rem; font-weight:bold;">${variantLabel}</span>
+                     </div>
+                     <h2 style="margin:2px 0; font-size:1.1rem; line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%;">${tub?.name}</h2>
+                     <img src="${qrUrl}" width="80" height="80" style="margin: 2px 0;" />
+                     <small style="display:block; font-family:monospace; font-size: 0.7rem;">${tub?.id?.slice(0, 8)}</small>
+                </div>
+               `;
+            } else if (type === 'thermal-2.25x1.25') {
+                return `
+                <div class="label-thermal-small">
+                     <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                         <div style="text-align:left; flex:1; overflow:hidden;">
+                            <strong style="display:block; font-size:0.8rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${tub?.name}</strong>
+                            <span style="font-size:0.6rem; font-family:monospace;">${tub?.id?.slice(0, 6)}</span>
+                         </div>
+                         <img src="${qrUrl}" width="60" height="60" />
+                     </div>
+                </div>
+               `;
             }
         };
 
@@ -133,9 +168,59 @@ const PrintModal = ({ isOpen, onClose, items, tub, qrUrl }) => {
                 margin-bottom: 0.6in; /* Gap */
             }
             
+            /* Thermal 4x6 */
+            .label-thermal-4x6 {
+                width: 4in;
+                height: 6in;
+                padding: 0.2in;
+                box-sizing: border-box;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                page-break-after: always;
+                border: 1px dotted #ccc; /* Helper border, might want to remove for print or keep as guide */
+                margin: 0 auto;
+            }
+
+            /* Thermal 3x2 */
+            .label-thermal-3x2 {
+                width: 3in;
+                height: 2in;
+                padding: 0.1in;
+                box-sizing: border-box;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                page-break-after: always;
+                overflow: hidden;
+            }
+
+            /* Thermal 2.25x1.25 */
+            .label-thermal-small {
+                width: 2.25in;
+                height: 1.25in;
+                padding: 0.05in;
+                box-sizing: border-box;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                page-break-after: always;
+                overflow: hidden;
+            }
+
             /* Print Utilities */
             @media print {
-                @page { margin: 0; } /* We handle margins in container */
+                @page { margin: 0; } 
+                body { margin: 0; padding: 0; }
+                .label-single, .label-thermal-4x6, .label-thermal-3x2, .label-thermal-small {
+                    border: none; /* Remove guide borders */
+                    margin: 0;
+                    page-break-after: always;
+                }
                 button { display: none; }
             }
         `;
@@ -150,6 +235,9 @@ const PrintModal = ({ isOpen, onClose, items, tub, qrUrl }) => {
             content = `<div class="page-5160">${generatedLabels}</div>`;
         } else if (format === '22806') {
             content = `<div class="page-22806">${generatedLabels}</div>`;
+        } else {
+            // All thermal / single types just dump the labels directly
+            content = generatedLabels;
         }
 
         printWindow.document.write(`
@@ -285,6 +373,34 @@ const PrintModal = ({ isOpen, onClose, items, tub, qrUrl }) => {
                                     <span style={{ fontSize: '0.8rem', color: '#aaa' }}>Best for plain paper or thermal</span>
                                 </div>
                             </label>
+
+                            <h4 style={{ marginTop: '16px', marginBottom: '8px', color: 'var(--color-primary)' }}>Thermal / Single</h4>
+
+                            <label className="glass-card" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '16px', cursor: 'pointer', marginBottom: '8px', border: format === 'thermal-4x6' ? '1px solid var(--color-accent)' : '1px solid transparent' }}>
+                                <input type="radio" name="format" checked={format === 'thermal-4x6'} onChange={() => setFormat('thermal-4x6')} style={{ width: '20px', height: '20px' }} />
+                                <div>
+                                    <strong style={{ display: 'block' }}>4" x 6" Shipping</strong>
+                                    <span style={{ fontSize: '0.8rem', color: '#aaa' }}>Standard large thermal label</span>
+                                </div>
+                            </label>
+
+                            <label className="glass-card" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '16px', cursor: 'pointer', marginBottom: '8px', border: format === 'thermal-3x2' ? '1px solid var(--color-accent)' : '1px solid transparent' }}>
+                                <input type="radio" name="format" checked={format === 'thermal-3x2'} onChange={() => setFormat('thermal-3x2')} style={{ width: '20px', height: '20px' }} />
+                                <div>
+                                    <strong style={{ display: 'block' }}>3" x 2" Medium</strong>
+                                    <span style={{ fontSize: '0.8rem', color: '#aaa' }}>Common for bin labeling</span>
+                                </div>
+                            </label>
+
+                            <label className="glass-card" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '16px', cursor: 'pointer', marginBottom: '8px', border: format === 'thermal-2.25x1.25' ? '1px solid var(--color-accent)' : '1px solid transparent' }}>
+                                <input type="radio" name="format" checked={format === 'thermal-2.25x1.25'} onChange={() => setFormat('thermal-2.25x1.25')} style={{ width: '20px', height: '20px' }} />
+                                <div>
+                                    <strong style={{ display: 'block' }}>2.25" x 1.25" Small</strong>
+                                    <span style={{ fontSize: '0.8rem', color: '#aaa' }}>Compact barcode label</span>
+                                </div>
+                            </label>
+
+                            <h4 style={{ marginTop: '16px', marginBottom: '8px', color: 'var(--color-primary)' }}>Page Sheets</h4>
 
                             <label className="glass-card" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '16px', cursor: 'pointer', marginBottom: '8px', border: format === '22806' ? '1px solid var(--color-accent)' : '1px solid transparent' }}>
                                 <input type="radio" name="format" checked={format === '22806'} onChange={() => setFormat('22806')} style={{ width: '20px', height: '20px' }} />
