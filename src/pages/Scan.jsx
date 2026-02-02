@@ -71,12 +71,20 @@ const Scan = () => {
                     navigate('/dashboard');
                 }
             } catch (e) {
-                if (decodedText.includes('http')) {
+                // Not JSON, check for URL pattern (e.g. https://boxed-up.app/containers/uuid)
+                // We look for /containers/uuid or /tubs/uuid
+                const urlMatch = decodedText.match(/\/(containers|tubs)\/([a-zA-Z0-9-]+)/);
+
+                if (urlMatch && urlMatch[2]) {
+                    navigate(`/containers/${urlMatch[2]}`);
+                } else if (decodedText.includes('http')) {
+                    // It's a URL but not ours?
                     alert("Scanned URL: " + decodedText);
+                    navigate('/dashboard');
                 } else {
                     alert("Scanned: " + decodedText);
+                    navigate('/dashboard');
                 }
-                navigate('/dashboard');
             }
         } catch (err) {
             console.error(err);

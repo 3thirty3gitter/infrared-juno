@@ -31,8 +31,9 @@ const ContainerDetails = () => {
             if (tubError) throw tubError;
             setTub(tubData);
 
-            // Generate QR Code
-            const qrContent = JSON.stringify({ type: 'container', id: tubData.id, name: tubData.name });
+            // Generate QR Code as URL
+            const appUrl = window.location.origin;
+            const qrContent = `${appUrl}/containers/${tubData.id}`;
             const url = await QRCode.toDataURL(qrContent, { width: 300, margin: 2, color: { dark: '#000000', light: '#ffffff' } });
             setQrUrl(url);
 

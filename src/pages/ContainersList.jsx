@@ -82,8 +82,9 @@ const ContainersList = () => {
         const selected = tubs.filter(t => selectedIds.has(t.id));
 
         // Generate QRs for all
+        const appUrl = window.location.origin;
         const batchData = await Promise.all(selected.map(async (tub) => {
-            const qrContent = JSON.stringify({ type: 'tub', id: tub.id, name: tub.name });
+            const qrContent = `${appUrl}/containers/${tub.id}`;
             const url = await QRCode.toDataURL(qrContent, { width: 300, margin: 2, color: { dark: '#000000', light: '#ffffff' } });
             return { tub, qrUrl: url };
         }));
