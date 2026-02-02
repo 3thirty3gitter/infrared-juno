@@ -246,7 +246,7 @@ const Profile = () => {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '32px' }}>
                 <div className="glass-card" style={{ textAlign: 'center', padding: '20px' }}>
                     <div style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--color-primary)' }}>{stats.tubs}</div>
-                    <div style={{ color: 'var(--color-text-muted)' }}>Tubs</div>
+                    <div style={{ color: 'var(--color-text-muted)' }}>Containers</div>
                 </div>
                 <div className="glass-card" style={{ textAlign: 'center', padding: '20px' }}>
                     <div style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--color-accent)' }}>{stats.items}</div>

@@ -5,7 +5,7 @@ import { ArrowLeft, Printer, Plus, Package, Trash2 } from 'lucide-react';
 import PrintModal from '../components/tubs/PrintModal';
 import { getVariantIcon, getVariantLabel } from '../constants/tubVariants';
 
-const TubDetails = () => {
+const ContainerDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [tub, setTub] = useState(null);
@@ -31,7 +31,7 @@ const TubDetails = () => {
             setTub(tubData);
 
             // Generate QR Code
-            const qrContent = JSON.stringify({ type: 'tub', id: tubData.id, name: tubData.name });
+            const qrContent = JSON.stringify({ type: 'container', id: tubData.id, name: tubData.name });
             const url = await QRCode.toDataURL(qrContent, { width: 300, margin: 2, color: { dark: '#000000', light: '#ffffff' } });
             setQrUrl(url);
 
@@ -52,14 +52,13 @@ const TubDetails = () => {
     };
 
     const deleteTub = async () => {
-        if (!window.confirm("Are you sure you want to delete this tub and all its items?")) return;
-
+        if (!window.confirm("Are you sure you want to delete this container and all its items?")) return;
         try {
             const { error } = await supabase.from('tubs').delete().eq('id', id);
             if (error) throw error;
-            navigate('/tubs', { replace: true });
+            navigate('/containers', { replace: true });
         } catch (err) {
-            alert("Error deleting tub: " + err.message);
+            alert("Error deleting container: " + err.message);
         }
     };
 
@@ -130,14 +129,14 @@ const TubDetails = () => {
                         <Printer size={18} /> Print Label
                     </button>
                     <button onClick={deleteTub} className="btn btn-ghost" style={{ color: '#ff4444' }}>
-                        <Trash2 size={18} /> Delete Tub
+                        <Trash2 size={18} /> Delete Container
                     </button>
                 </div>
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '24px 0 16px' }}>
-                <h2>Items in Tub ({items.length})</h2>
-                <Link to={`/tubs/${id}/add`} className="btn btn-primary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>
+                <h2>Items in Container ({items.length})</h2>
+                <Link to={`/containers/${id}/add`} className="btn btn-primary" style={{ padding: '8px 16px', fontSize: '0.9rem' }}>
                     <Plus size={16} /> Add Item
                 </Link>
             </div>
@@ -145,7 +144,7 @@ const TubDetails = () => {
             {items.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '40px 0', opacity: 0.5, border: '2px dashed rgba(255,255,255,0.1)', borderRadius: '16px' }}>
                     <Package size={48} style={{ marginBottom: '12px' }} />
-                    <p>This tub is empty.</p>
+                    <p>This container is empty.</p>
                 </div>
             ) : (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '16px' }}>
@@ -205,4 +204,4 @@ const TubDetails = () => {
     );
 };
 
-export default TubDetails;
+export default ContainerDetails;

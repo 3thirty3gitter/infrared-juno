@@ -91,7 +91,7 @@ const AddItem = () => {
             ]);
 
             if (error) throw error;
-            navigate(`/tubs/${tubId}`);
+            navigate(`/containers/${tubId}`);
 
         } catch (err) {
             console.error(err);

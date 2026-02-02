@@ -64,8 +64,8 @@ const Scan = () => {
             // Logic to parse
             try {
                 const data = JSON.parse(decodedText);
-                if (data.type === 'tub' && data.id) {
-                    navigate(`/tubs/${data.id}`);
+                if ((data.type === 'container' || data.type === 'tub') && data.id) {
+                    navigate(`/containers/${data.id}`);
                 } else {
                     alert("Scanned data not recognized: " + decodedText);
                     navigate('/dashboard');
@@ -109,7 +109,7 @@ const Scan = () => {
             </div>
 
             <div style={{ position: 'absolute', top: '20%', left: 0, right: 0, textAlign: 'center', zIndex: 210, pointerEvents: 'none' }}>
-                <h2 style={{ color: 'white', textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>Scan Tub QR</h2>
+                <h2 style={{ color: 'white', textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>Scan Container QR</h2>
                 <p style={{ color: 'rgba(255,255,255,0.8)' }}>Align the code within the frame</p>
             </div>
 

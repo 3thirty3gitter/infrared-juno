@@ -6,7 +6,7 @@ import { getVariantIcon } from '../constants/tubVariants';
 import PrintModal from '../components/tubs/PrintModal';
 import QRCode from 'qrcode';
 
-const TubsList = () => {
+const ContainersList = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const [tubs, setTubs] = useState([]);
@@ -113,7 +113,7 @@ const TubsList = () => {
                     </div>
                 ) : (
                     <>
-                        <h1>My Tubs</h1>
+                        <h1>My Storage</h1>
                         <div style={{ display: 'flex', gap: '8px' }}>
                             <button onClick={() => setIsSelectionMode(true)} className="btn btn-ghost" style={{ padding: '8px' }}>
                                 <CheckSquare size={20} />
@@ -132,7 +132,7 @@ const TubsList = () => {
                     <Search size={20} color="var(--color-text-muted)" />
                     <input
                         type="text"
-                        placeholder="Filter tubs..."
+                        placeholder="Filter containers..."
                         style={{ margin: 0, border: 'none', background: 'transparent', padding: 0 }}
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
@@ -166,7 +166,7 @@ const TubsList = () => {
                         {filteredTubs.length === 0 ? (
                             <div style={{ textAlign: 'center', padding: '40px 0', opacity: 0.7 }}>
                                 <Box size={48} color="var(--color-text-muted)" style={{ marginBottom: '16px' }} />
-                                <p>No tubs found.</p>
+                                <p>No storage containers found.</p>
                                 <Link to="/create" className="btn btn-ghost" style={{ marginTop: '8px' }}>Create one now</Link>
                             </div>
                         ) : (
@@ -186,7 +186,7 @@ const TubsList = () => {
                                         style={{ position: 'relative' }}
                                     >
                                         <Link
-                                            to={isSelectionMode ? '#' : `/tubs/${tub.id}`}
+                                            to={isSelectionMode ? '#' : `/containers/${tub.id}`}
                                             className="glass-card"
                                             style={{
                                                 display: 'flex', justifyContent: 'space-between', alignItems: 'center',
@@ -250,4 +250,4 @@ const TubsList = () => {
     );
 };
 
-export default TubsList;
+export default ContainersList;

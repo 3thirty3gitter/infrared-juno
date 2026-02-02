@@ -34,9 +34,9 @@ const Navbar = () => {
                     <span>Home</span>
                 </NavLink>
 
-                <NavLink to="/tubs" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+                <NavLink to="/containers" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
                     <Box size={24} />
-                    <span>Tubs</span>
+                    <span>Containers</span>
                 </NavLink>
 
                 {/* FAB Replacement for Desktop or Extra Item? 

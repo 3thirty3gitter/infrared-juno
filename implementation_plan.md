@@ -1,6 +1,6 @@
 # Project Implementation Plan: Smart Storage QR App (Web/PWA)
 
-**Project Name:** SmartStorage (TBD)
+**Project Name:** BoxedUp
 **Goal:** A mobile-first Progressive Web Application (PWA) for managing storage tubs via QR codes.
 **Target Audience:** Homeowners, Android/iOS users (Cross-platform coverage via Web).
 
@@ -59,7 +59,7 @@
 - [x] Create Authentication Context (Login/Signup flows).
 - [x] Design Database Schema SQL script.
 
-### Phase 3: Core Functionality (The "Tub" Logic)
+### Phase 3: Core Functionality (The "Container" Logic)
 - [x] Build "My Tubs" list view.
 - [x] Build "Create Tub" form.
 - [x] Implement QR Code generation (using `qrcode` lib).

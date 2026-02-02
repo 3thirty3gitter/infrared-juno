@@ -59,7 +59,7 @@ const Home = () => {
 
     const handleSearch = (e) => {
         if (e.key === 'Enter') {
-            navigate(`/tubs?q=${encodeURIComponent(searchTerm)}`);
+            navigate(`/containers?q=${encodeURIComponent(searchTerm)}`);
         }
     };
 
@@ -97,7 +97,7 @@ const Home = () => {
                 <Search size={20} color="var(--color-text-muted)" />
                 <input
                     type="text"
-                    placeholder="Search items, tubs, tags..."
+                    placeholder="Search items, containers, tags..."
                     style={{ margin: 0, border: 'none', background: 'transparent', padding: 0 }}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
@@ -110,9 +110,9 @@ const Home = () => {
 
             {/* Stats */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '24px' }}>
-                <Link to="/tubs" className="glass-card" style={{ textAlign: 'center', display: 'block', textDecoration: 'none' }}>
+                <Link to="/containers" className="glass-card" style={{ textAlign: 'center', display: 'block', textDecoration: 'none' }}>
                     <h2 style={{ fontSize: '2rem', color: 'var(--color-accent)', marginBottom: '4px' }}>{stats.tubs}</h2>
-                    <p>Active Tubs</p>
+                    <p>Active Containers</p>
                 </Link>
                 <div className="glass-card" style={{ textAlign: 'center' }}>
                     <h2 style={{ fontSize: '2rem', color: '#ff00ff', marginBottom: '4px' }}>{stats.items}</h2>
@@ -120,24 +120,24 @@ const Home = () => {
                 </div>
             </div>
 
-            {/* Recent Tubs Section */}
+            {/* Recent Containers Section */}
             <section style={{ marginBottom: '24px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                    <h2>Recent Tubs</h2>
-                    <Link to="/tubs" style={{ color: 'var(--color-accent)', fontSize: '0.9rem' }}>View All</Link>
+                    <h2>Recent Containers</h2>
+                    <Link to="/containers" style={{ color: 'var(--color-accent)', fontSize: '0.9rem' }}>View All</Link>
                 </div>
 
                 {loading ? (
                     <p style={{ color: 'var(--color-text-muted)', textAlign: 'center' }}>Loading dashboard...</p>
                 ) : recentTubs.length === 0 ? (
                     <div className="glass-card" style={{ textAlign: 'center', padding: '32px' }}>
-                        <p>No tubs yet.</p>
-                        <Link to="/create" className="btn btn-primary" style={{ marginTop: '12px' }}>Create First Tub</Link>
+                        <p>No containers yet.</p>
+                        <Link to="/create" className="btn btn-primary" style={{ marginTop: '12px' }}>Create First Container</Link>
                     </div>
                 ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                         {recentTubs.map((tub) => (
-                            <Link key={tub.id} to={`/tubs/${tub.id}`} className="glass-card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: 0 }}>
+                            <Link key={tub.id} to={`/containers/${tub.id}`} className="glass-card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: 0 }}>
                                 <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
                                     <div style={{
                                         width: '48px', height: '48px',
@@ -175,7 +175,7 @@ const Home = () => {
                             const daysLeft = Math.ceil((new Date(item.expiry_date) - new Date()) / (1000 * 60 * 60 * 24));
                             const isExpired = daysLeft < 0;
                             return (
-                                <Link key={item.id} to={`/tubs/${item.tub_id}`} className="glass-card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: 0, borderLeft: isExpired ? '4px solid #ff4444' : '4px solid #ffcc00' }}>
+                                <Link key={item.id} to={`/containers/${item.tub_id}`} className="glass-card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: 0, borderLeft: isExpired ? '4px solid #ff4444' : '4px solid #ffcc00' }}>
                                     <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
                                         <div style={{
                                             width: '48px', height: '48px',

@@ -4,9 +4,9 @@ import Home from './pages/Home';
 import Navbar from './components/layout/Navbar';
 import { AuthProvider } from './contexts/AuthContext';
 import Login from './pages/Login';
-import CreateTub from './pages/CreateTub';
-import TubsList from './pages/TubsList';
-import TubDetails from './pages/TubDetails';
+import CreateContainer from './pages/CreateContainer';
+import ContainersList from './pages/ContainersList';
+import ContainerDetails from './pages/ContainerDetails';
 import Scan from './pages/Scan';
 import AddItem from './pages/AddItem';
 import Profile from './pages/Profile';
@@ -27,11 +27,11 @@ function App() {
 
             <Route path="/" element={<Landing />} />
             <Route path="/dashboard" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-            <Route path="/tubs" element={<ProtectedRoute><TubsList /></ProtectedRoute>} />
-            <Route path="/tubs/:id" element={<ProtectedRoute><TubDetails /></ProtectedRoute>} />
-            <Route path="/tubs/:id/add" element={<ProtectedRoute><AddItem /></ProtectedRoute>} />
+            <Route path="/containers" element={<ProtectedRoute><ContainersList /></ProtectedRoute>} />
+            <Route path="/containers/:id" element={<ProtectedRoute><ContainerDetails /></ProtectedRoute>} />
+            <Route path="/containers/:id/add" element={<ProtectedRoute><AddItem /></ProtectedRoute>} />
             <Route path="/scan" element={<ProtectedRoute><Scan /></ProtectedRoute>} />
-            <Route path="/create" element={<ProtectedRoute><CreateTub /></ProtectedRoute>} />
+            <Route path="/create" element={<ProtectedRoute><CreateContainer /></ProtectedRoute>} />
             <Route path="/tags" element={<ProtectedRoute><Tags /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="/update-password" element={<ProtectedRoute><UpdatePassword /></ProtectedRoute>} />

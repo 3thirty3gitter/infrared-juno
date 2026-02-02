@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Save, ArrowLeft } from 'lucide-react';
 import { TUB_VARIANTS } from '../constants/tubVariants';
 
-const CreateTub = () => {
+const CreateContainer = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
@@ -37,7 +37,7 @@ const CreateTub = () => {
             ]);
 
             if (error) throw error;
-            navigate('/tubs');
+            navigate('/containers');
         } catch (err) {
             console.error(err);
             alert('Error creating container: ' + err.message);
@@ -145,4 +145,4 @@ const CreateTub = () => {
     );
 };
 
-export default CreateTub;
+export default CreateContainer;
