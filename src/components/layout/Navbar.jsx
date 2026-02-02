@@ -20,7 +20,7 @@ const Navbar = () => {
             <nav className="nav-bar">
                 {/* Desktop Logo Area */}
                 <div className="desktop-logo" style={{ marginBottom: '40px', padding: '0 32px', width: '100%', display: 'none' }}>
-                    <h1 style={{ fontSize: '1.8rem', margin: 0 }}>Juno</h1>
+                    <h1 style={{ fontSize: '1.8rem', margin: 0 }}>BoxedUp</h1>
                     <p style={{ fontSize: '0.8rem', opacity: 0.7 }}>Inventory OS</p>
                 </div>
                 <style>{`
@@ -43,22 +43,14 @@ const Navbar = () => {
                    On Mobile, FAB is floating. Here we put Voice in the nav flow. 
                 */}
 
-                <div style={{ display: 'flex', justifyContent: 'center', width: '100%', padding: '8px 0' }}>
+                <div className="voice-mic-container">
                     <button
                         onClick={startListening}
                         className="fab-voice"
-                        style={{
-                            background: 'linear-gradient(135deg, var(--color-primary), var(--color-accent))',
-                            border: 'none',
-                            borderRadius: '50%',
-                            width: '56px', height: '56px',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            boxShadow: '0 4px 15px rgba(138, 43, 226, 0.5)',
-                            color: 'white'
-                        }}
                     >
                         <Mic size={28} />
                     </button>
+                    <span className="desktop-only-text">Voice Search</span>
                 </div>
 
                 <NavLink to="/create" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>

@@ -31,6 +31,11 @@
   padding: 0;
 }
 
+.main-layout {
+  padding-bottom: 80px;
+  min-height: 100vh;
+}
+
 body {
   font-family: var(--font-main);
   background: var(--color-bg-deep);
@@ -39,8 +44,6 @@ body {
   color: var(--color-text-main);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
-  padding-bottom: 80px;
-  /* Space for bottom nav or FAB */
 }
 
 a {
@@ -91,6 +94,7 @@ h1 {
   margin-bottom: 1rem;
   background: linear-gradient(90deg, #fff, #a0a0ff);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -163,11 +167,9 @@ textarea:focus {
 .fab {
   position: fixed;
   bottom: 32px;
-  /* moved up slightly to sit on/above nav */
   left: 50%;
   transform: translateX(-50%);
   width: 64px;
-  /* slightly larger */
   height: 64px;
   border-radius: 50%;
   background: var(--color-accent);
@@ -183,6 +185,82 @@ textarea:focus {
 
 .fab:hover {
   transform: translateX(-50%) scale(1.1);
+}
+
+/* Voice FAB Styling */
+.fab-voice {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  border: none;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(138, 43, 226, 0.5);
+  color: white;
+  transition: all 0.2s;
+}
+
+.voice-mic-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 8px 0;
+}
+
+.desktop-only-text {
+  display: none;
+}
+
+@media (min-width: 768px) {
+
+  /* Hide main FAB on desktop since we have sidebar nav */
+  .fab {
+    display: none;
+  }
+
+  /* Adjust Voice Button for Sidebar */
+  .voice-mic-container {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 16px 32px;
+    gap: 12px;
+    width: 100%;
+    cursor: pointer;
+  }
+
+  .voice-mic-container:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .fab-voice {
+    width: 32px;
+    height: 32px;
+    box-shadow: none;
+    background: transparent;
+    color: var(--color-text-muted);
+  }
+
+  .voice-mic-container:hover .fab-voice {
+    color: white;
+  }
+
+  .voice-mic-container:hover .desktop-only-text {
+    color: white;
+  }
+
+  .fab-voice svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .desktop-only-text {
+    display: block;
+    font-size: 1rem;
+    color: var(--color-text-muted);
+  }
 }
 
 .nav-bar {
@@ -202,9 +280,11 @@ textarea:focus {
 }
 
 @media (min-width: 768px) {
-  body {
-    padding-bottom: 0;
+
+
+  .main-layout {
     padding-left: 250px;
+    padding-bottom: 0;
   }
 
   .nav-bar {
